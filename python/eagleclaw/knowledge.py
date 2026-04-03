@@ -111,3 +111,43 @@ def search_references(query: str) -> list:
         "xrpl_bridge": "https://docs.tx.org/docs-bridge/overview",
         "validator_nodes": "https://docs.tx.org/docs/next/nodes-and-validators/run-full-node",
     },
+
+    # TX Blockchain - Additional References
+    "tx_docs": {
+        "main": "https://docs.tx.org/",
+        "general": "https://docs.tx.org/docs/next/overview/general",
+        "smart_tokens": "https://docs.tx.org/docs/next/overview/smart-tokens",
+        "bridge": "https://docs.tx.org/docs-bridge/overview",
+        "nodes": "https://docs.tx.org/docs/next/nodes-and-validators/run-full-node",
+        "validators": "https://docs.tx.org/docs/next/nodes-and-validators/validators",
+        "dex_api": "https://docs.tx.org/docs/next/dex-api",
+        "chain_api": "https://docs.tx.org/docs/next/chain-api",
+        "marketplace_api": "https://docs.tx.org/docs/next/marketplace-api",
+    },
+    
+    "tx_ecosystem": {
+        "main_site": "https://tx.org/",
+        "community": "https://tx.org/community",
+        "projects": "https://tx.org/projects",
+        "team": "https://tx.org/tx-team",
+        "whitepapers": "https://tx.org/whitepapers",
+        "blog": "https://tx.org/blog",
+        "github": "https://github.com/tx-org",
+        "explorer": "https://explorer.tx.org/",
+        "developers": "https://tx.org/developers",
+        "stakers": "https://tx.org/staking",
+    },
+    
+    "tx_smart_tokens": {
+        "overview": "https://docs.tx.org/docs/next/overview/smart-tokens",
+        "issuance": "https://docs.tx.org/docs/next/overview/smart-tokens#issuance",
+        "minting": "https://docs.tx.org/docs/next/overview/smart-tokens#minting",
+        "acl": "https://docs.tx.org/docs/next/overview/smart-tokens#access-control-list",
+        "burning": "https://docs.tx.org/docs/next/overview/smart-tokens#burning",
+        "freezing": "https://docs.tx.org/docs/next/overview/smart-tokens#freezing",
+        "whitelisting": "https://docs.tx.org/docs/next/overview/smart-tokens#whitelisting",
+        "ibc": "https://docs.tx.org/docs/next/overview/smart-tokens#ibc-compatibility",
+        "clawback": "https://docs.tx.org/docs/next/overview/smart-tokens#clawback",
+        "extension": "https://docs.tx.org/docs/next/overview/smart-tokens#extension",
+    },
+}
