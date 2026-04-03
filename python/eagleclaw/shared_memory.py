@@ -121,3 +121,76 @@ class SharedMemory:
     def close(self):
         """Close database connection"""
         self.conn.close()
+
+    def auto_extract_memories(self, agent: str, question: str, answer: str):
+        """Automatically extract and store key information from conversations"""
+        import re
+        
+        # Look for percentage patterns (e.g., "10% collateral")
+        percent_pattern = r'(\d+(?:\.\d+)?)%\s+(\w+)'
+        matches = re.findall(percent_pattern, answer)
+        for percent, subject in matches:
+            self.remember(agent, f"{subject}_percentage", f"{percent}%")
+        
+        # Look for fee patterns
+        fee_pattern = r'fee\s+is\s+(\d+(?:\.\d+)?)%'
+        matches = re.findall(fee_pattern, answer, re.IGNORECASE)
+        for fee in matches:
+            self.remember(agent, "fee_percentage", f"{fee}%")
+        
+        # Look for time periods (inspection hours)
+        time_pattern = r'(\d+)\s+hours?\s+inspection'
+        matches = re.findall(time_pattern, answer, re.IGNORECASE)
+        for hours in matches:
+            self.remember(agent, "inspection_hours", hours)
+
+    def find_agent_for_task(self, task: str) -> list:
+        """Find which agent is best suited for a task"""
+        self.cursor.execute(
+            "SELECT name, capabilities FROM agent_registry WHERE capabilities LIKE ?",
+            (f"%{task}%",)
+        )
+        return self.cursor.fetchall()
+    
+    def route_question(self, question: str) -> str:
+        """Route question to the most appropriate agent"""
+        agents = self.find_agent_for_task(question)
+        if agents:
+            return f"Recommended agent: {agents[0][0]} - {agents[0][1][:100]}"
+        return "No specific agent recommendation"
+
+    def cleanup_old_memories(self, days: int = 30):
+        """Remove memories older than specified days"""
+        import datetime
+        cutoff = (datetime.datetime.now() - datetime.timedelta(days=days)).isoformat()
+        self.cursor.execute("DELETE FROM memories WHERE timestamp < ?", (cutoff,))
+        self.conn.commit()
+        return self.cursor.rowcount
+    
+    def get_memory_age(self, key: str) -> str:
+        """Get age of a specific memory"""
+        self.cursor.execute(
+            "SELECT timestamp FROM memories WHERE key = ? ORDER BY timestamp DESC LIMIT 1",
+            (key,)
+        )
+        result = self.cursor.fetchone()
+        if result:
+            return f"Memory age: {result[0]}"
+        return "Memory not found"
+
+    def summarize_conversations(self, agent: str = None, limit: int = 100):
+        """Get summary of recent conversations"""
+        if agent:
+            self.cursor.execute(
+                "SELECT COUNT(*), MIN(timestamp), MAX(timestamp) FROM conversations WHERE agent = ?",
+                (agent,)
+            )
+        else:
+            self.cursor.execute("SELECT COUNT(*), MIN(timestamp), MAX(timestamp) FROM conversations")
+        
+        result = self.cursor.fetchone()
+        return {
+            "total_conversations": result[0],
+            "first_conversation": result[1],
+            "last_conversation": result[2]
+        }
